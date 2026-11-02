@@ -1,0 +1,6 @@
+data/*.xes
+data/*.xes.gz
+output/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/   
