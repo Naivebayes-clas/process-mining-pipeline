@@ -8,6 +8,7 @@ import argparse
 import os
 import logging
 from pathlib import Path
+from validate import validate
 
 import pm4py
 import pandas as pd
@@ -23,6 +24,7 @@ def load_log(path: str) -> pd.DataFrame:
     n_cases = log['case:concept:name'].nunique()
     logger.info(f"Loaded {len(log)} events, {n_cases} cases")
     return log
+
 
 
 def discover_model(log: pd.DataFrame, output_dir: str):
@@ -108,7 +110,7 @@ def analyze_performance(log: pd.DataFrame, output_dir: str) -> pd.DataFrame:
 def main():
     parser = argparse.ArgumentParser(description="Process Mining Pipeline")
     parser.add_argument("--input", required=True, help="Path to XES file")
-    parser.add_argument("--output", default="output/", help="Output directory")
+    parser.add_argument("--output", default="output", help="Output directory")
     parser.add_argument("--top-n", type=int, default=10, help="Top N variants to report")
     args = parser.parse_args()
 
@@ -116,15 +118,28 @@ def main():
 
     # Pipeline
     log = load_log(args.input)
+
+    # Stage 0: Validation
+    logger.info("Running Stage 0: Data Quality Validation...")
+    report = validate(log, required_order=[
+        ["Submit Loan Application", "Review Application"],
+        ["Review Application", "Credit Check"],
+        ["Credit Check", "Approve Loan"],
+        ["Approve Loan", "Disburse Funds"],
+    ])
+    if not report.passed:
+        logger.error("Validation FAILED. Aborting pipeline.")
+        return  # ← OK here, because we're inside main()
+
+    logger.info("Validation passed. Proceeding to mining...")
+
     model = discover_model(log, args.output)
     variants = extract_variants(log, top_n=args.top_n)
     fitness = check_conformance(log, *model[1:])
     perf_df = analyze_performance(log, args.output)
 
-    # Save performance table
     perf_df.to_csv(os.path.join(args.output, "performance.csv"), index=False)
     logger.info(f"Saved performance table: {args.output}/performance.csv")
-
     logger.info("Pipeline complete.")
 
 
