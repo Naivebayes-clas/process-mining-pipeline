@@ -103,6 +103,9 @@ A **variant** is a unique path through the process. Our pipeline found exactly 6
 | 6   | Submit → Review → Credit Check → Escalate → Senior Review → Approve → Disburse                  | 2%         |
 
 **This is the insight no one had.** The "expedited" path (variant 4) skips credit check — is that intentional policy or a bug? The rework loop (variant 3) means 10% of rejected applications come back and eventually get approved. The hold (variant 5) is eating 8 days of cycle time.
+<img width="2389" height="395" alt="dfg" src="https://github.com/user-attachments/assets/2ba606e6-3c63-4b90-85bb-3907f4ee044a" />
+<img width="3384" height="551" alt="process_model" src="https://github.com/user-attachments/assets/4e551739-6481-4a57-974e-02c69e6d0cb7" />
+<img width="1867" height="444" alt="performance_dfg" src="https://github.com/user-attachments/assets/11feddc2-5bb2-4fd5-944e-f9c3cefe6abd" />
 
 ---
 
@@ -124,9 +127,15 @@ Each transition has a **mean elapsed time**. The numbers tell you where time is 
 | Everything else          | < 25 hours   |
 
 **The business finding:** 80% of total cycle time is spent in just two steps — the hold and the rework. If you can reduce the average hold from 8 days to 2 days, you improve throughput for every case that hits that path. That's a **concrete, defensible recommendation** you can take to the operations director.
+<img width="946" height="566" alt="performance" src="https://github.com/user-attachments/assets/74425233-4873-4f35-b8c9-9bacc32fa2ce" />
 
 ---
 
 ### The whole pipeline in one sentence
 
 > **Take raw event data → verify it's clean → discover the process → find all the paths → check the model fits → measure where time is lost → tell the business what to fix.**
+
+
+
+https://github.com/user-attachments/assets/8bac8066-1e96-4be9-b838-7e57f29ed2ff
+
